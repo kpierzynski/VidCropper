@@ -83,6 +83,13 @@ namespace VidCropper
                 return;
             }
 
+            String currentPath = System.IO.Directory.GetCurrentDirectory();
+            if ( System.IO.File.Exists(currentPath + "\\ffmpeg.exe") != true )
+            {
+                MessageBox.Show("Cannot find ffmpeg.exe in current directory!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             SaveFileDialog save = new SaveFileDialog();
             save.Filter = "Video (*.mp4)|*.mp4";
             if (save.ShowDialog() != true) return;
@@ -107,7 +114,7 @@ namespace VidCropper
 
             using (Process p = new Process())
             {
-                p.StartInfo.FileName = System.IO.Directory.GetCurrentDirectory() + "\\ffmpeg.exe";
+                p.StartInfo.FileName = currentPath + "\\ffmpeg.exe";
                 p.StartInfo.Arguments = cmd.ToString();
                 p.StartInfo.CreateNoWindow = false;
                 p.Start();
