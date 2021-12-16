@@ -1,0 +1,19 @@
+﻿<Window x:Name="window" x:Class="VidCropper.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VidCropper"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="510" Width="800" Top="0" Left="0">
+    <Grid>
+
+        <MediaElement x:Name="player" Margin="0,0,0,133" Stretch="Fill"/>
+        <Canvas x:Name="canvas" Margin="0,0,0,133"/>
+        <TextBlock x:Name="duration" Margin="10,0,10,95" TextWrapping="Wrap" Text="Duration: " Height="23" VerticalAlignment="Bottom"/>
+        <Button x:Name="generate" Content="Save" Margin="0,0,10,20" Click="generate_click" HorizontalAlignment="Right" Width="75" Height="23" VerticalAlignment="Bottom"/>
+
+        <TextBox x:Name="command" Margin="10,0,10,48" TextWrapping="Wrap" Text="" Height="42" VerticalAlignment="Bottom"/>
+        <Button x:Name="file" Content="Open" Margin="0,0,90,20" Click="file_click" HorizontalAlignment="Right" Width="75" Height="23" VerticalAlignment="Bottom"/>
+    </Grid>
+</Window>
