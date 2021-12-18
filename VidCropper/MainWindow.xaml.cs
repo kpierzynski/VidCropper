@@ -39,11 +39,42 @@ namespace VidCropper
             player.MouseLeftButtonDown += player_mouseLeftButtonDown;
             player.MouseLeftButtonUp += player_mouseLeftButtonUp;
             player.MediaOpened += player_loaded;
+
+            progressBar.PreviewMouseLeftButtonDown += progressBar_start_dragging_event;
+            progressBar.ValueChanged += progressBar_value_event;
+            progressBar.PreviewMouseLeftButtonUp += progressBar_end_dragging_event;
         }
+
+        private void progressBar_start_dragging_event(object sender, MouseButtonEventArgs e)
+        {
+            player.Pause();
+        }
+
+        private void progressBar_end_dragging_event(object sender, MouseButtonEventArgs e)
+        {
+            player.Play();
+        }
+
+        private void progressBar_value_event(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            double position = e.NewValue;
+            player.Position = TimeSpan.FromSeconds(position);
+        }
+
         private void player_loaded(object sender, RoutedEventArgs e)
         {
             cutFrom.Text = "00:00:00";
             if (String.IsNullOrEmpty(cutTo.Text)) cutTo.Text = player.NaturalDuration.TimeSpan.ToString(@"hh\:mm\:ss");
+            length.Text = cutTo.Text;
+
+            play.IsEnabled = true;
+            pause.IsEnabled = true;
+            plus10s.IsEnabled = true;
+            minus10s.IsEnabled = true;
+            generate.IsEnabled = true;
+            progressBar.IsEnabled = true;
+            progressBar.Minimum = 0;
+            progressBar.Maximum = player.NaturalDuration.TimeSpan.TotalSeconds;
         }
 
         private void player_mouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -72,8 +103,8 @@ namespace VidCropper
 
         private void timer_event(object sender, EventArgs e)
         {
-            String dur = ((player.NaturalDuration.HasTimeSpan == true) ? player.NaturalDuration.TimeSpan.ToString(@"hh\:mm\:ss") : "00:00:00");
-            duration.Text = "Duration: " + player.Position.ToString(@"hh\:mm\:ss") + " / " + dur;
+            duration.Text = player.Position.ToString(@"hh\:mm\:ss");
+            progressBar.Value = player.Position.TotalSeconds;
         }
 
         private void generate_click(object sender, RoutedEventArgs e)
@@ -87,13 +118,13 @@ namespace VidCropper
             bool resFrom = DateTime.TryParseExact(from, timeStampFormat, DateTimeFormatInfo.InvariantInfo, DateTimeStyles.None, out fromTime);
             bool resTo = DateTime.TryParseExact(to, timeStampFormat, DateTimeFormatInfo.InvariantInfo, DateTimeStyles.None, out toTime);
 
-            if( fromTime > toTime )
+            if (fromTime > toTime)
             {
                 MessageBox.Show("From timestamp should be before to timestamp.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
-            if (from.Length == 0 || to.Length == 0 || !resFrom || !resTo )
+            if (from.Length == 0 || to.Length == 0 || !resFrom || !resTo)
             {
                 MessageBox.Show("Missing or incorrect from or to timestamps! Pass in hh:mm:ss format.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -106,13 +137,14 @@ namespace VidCropper
             }
 
             String currentPath = System.IO.Directory.GetCurrentDirectory();
-            if ( System.IO.File.Exists(currentPath + "\\ffmpeg.exe") != true )
+            if (System.IO.File.Exists(currentPath + "\\ffmpeg.exe") != true)
             {
                 MessageBox.Show("Cannot find ffmpeg.exe in current directory!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             SaveFileDialog save = new SaveFileDialog();
+            save.FileName = System.IO.Path.GetFileNameWithoutExtension(filePath) + "_cropped";
             save.Filter = "Video (*.mp4)|*.mp4";
             if (save.ShowDialog() != true) return;
             saveFilePath = save.FileName;
@@ -148,29 +180,28 @@ namespace VidCropper
                 p.StartInfo.Arguments = cmd.ToString();
                 p.StartInfo.CreateNoWindow = false;
                 p.Start();
-                p.WaitForExit();
             }
             canvas.Children.Clear();
         }
 
         private void plus10s_Click(object sender, RoutedEventArgs e)
         {
-            if (player.Source != default(Uri)) player.Position += TimeSpan.FromSeconds(9);
+            player.Position += TimeSpan.FromSeconds(4);
         }
 
         private void pause_Click(object sender, RoutedEventArgs e)
         {
-            if (player.Source != default(Uri)) player.Pause();
+            player.Pause();
         }
 
         private void play_Click(object sender, RoutedEventArgs e)
         {
-            if (player.Source != default(Uri)) player.Play();
+            player.Play();
         }
 
         private void minus10s_Click(object sender, RoutedEventArgs e)
         {
-            if (player.Source != default(Uri)) player.Position -= TimeSpan.FromSeconds(9);
+            player.Position -= TimeSpan.FromSeconds(5);
         }
 
         private void file_click(object sender, RoutedEventArgs e)

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VidCropper"
         mc:Ignorable="d"
-        Title="VidCropper" Height="510" Width="1200" Top="0" Left="0">
+        Title="VidCropper" MinWidth="750" MinHeight="350" Height="510" Width="1200" Top="0" Left="0">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -13,20 +13,20 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition MinWidth="200" Width="1*"/>
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
-        <MediaElement LoadedBehavior="Manual" Grid.Column="1" x:Name="player" Stretch="Fill" Margin="0,0,0,0"/>
-        <Canvas Grid.Column="1" x:Name="canvas" Margin="0,0,0,0"/>
-        <TextBlock Grid.Column="1" x:Name="duration" Margin="10,0,0,10" TextWrapping="Wrap" Text="Duration: 00:00:00" Height="23" VerticalAlignment="Bottom" Grid.Row="1" HorizontalAlignment="Left" Width="273"/>
+        <MediaElement ScrubbingEnabled="True" LoadedBehavior="Manual" Grid.Column="1" x:Name="player" Stretch="Fill" Margin="0,0,0,33"/>
+        <Canvas Grid.Column="1" x:Name="canvas" Margin="0,0,0,33"/>
+        <TextBlock Grid.Column="1" x:Name="duration" Margin="5,0,0,5" TextWrapping="Wrap" Text="00:00:00" Height="23" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="50"/>
 
         <Grid Grid.Column="0" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="1" x:Name="generate" Content="Save" Margin="10,0,10,10" Click="generate_click" Height="23" VerticalAlignment="Bottom" />
+            <Button IsEnabled="False" Grid.Column="1" x:Name="generate" Content="Save" Margin="10,0,10,10" Click="generate_click" Height="23" VerticalAlignment="Bottom" />
             <Button Grid.Column="0" x:Name="file" Content="Open" Margin="10,0,10,10" Click="file_click" Height="23" VerticalAlignment="Bottom"  />
         </Grid>
 
@@ -38,17 +38,19 @@
         <GridSplitter Grid.Column="0" Width="5" Grid.RowSpan="2"/>
         <ComboBox x:Name="codec" Margin="10,94,10,0" VerticalAlignment="Top">
             <ComboBoxItem Content="libx264" />
-            <ComboBoxItem Content="libx265" IsSelected="True" />
+            <ComboBoxItem Content="libx265" ToolTip="xd" IsSelected="True" />
         </ComboBox>
-        <Button x:Name="play" Content="Play" Grid.Column="1" Margin="0,10,169,10" Grid.Row="1" HorizontalAlignment="Right" Width="74" Click="play_Click"/>
-        <Button x:Name="pause" Content="Pause" Grid.Column="1" Margin="0,10,89,10" Grid.Row="1" HorizontalAlignment="Right" Width="75" Click="pause_Click"/>
-        <Button x:Name="minus10s" Content="-10s" Grid.Column="1" Margin="0,10,248,10" Grid.Row="1" HorizontalAlignment="Right" Width="74" Click="minus10s_Click"/>
-        <Button x:Name="plus10s" Content="+10s" Grid.Column="1" Margin="0,10,10,10" Grid.Row="1" HorizontalAlignment="Right" Width="74" Click="plus10s_Click"/>
-        <TextBox x:Name="cutFrom" Height="23" Margin="99,142,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+        <Button IsEnabled="False" x:Name="play" Content="Play" Grid.Column="1" Margin="0,10,169,10" Grid.Row="1" HorizontalAlignment="Right" Width="74" Click="play_Click"/>
+        <Button IsEnabled="False" x:Name="pause" Content="Pause" Grid.Column="1" Margin="0,10,89,10" Grid.Row="1" HorizontalAlignment="Right" Width="75" Click="pause_Click"/>
+        <Button IsEnabled="False" x:Name="minus10s" Content="-5s" Grid.Column="1" Margin="0,10,248,10" Grid.Row="1" HorizontalAlignment="Right" Width="74" Click="minus10s_Click"/>
+        <Button IsEnabled="False" x:Name="plus10s" Content="+5s" Grid.Column="1" Margin="0,10,10,10" Grid.Row="1" HorizontalAlignment="Right" Width="74" Click="plus10s_Click"/>
+        <TextBox x:Name="cutFrom" Height="23" Margin="52,142,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,121,0,0" TextWrapping="Wrap" Text="Cut" VerticalAlignment="Top" RenderTransformOrigin="0.527,-0.188" Width="377"/>
-        <TextBox x:Name="cutTo" Height="23" Margin="99,170,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
-        <TextBlock HorizontalAlignment="Left" Margin="10,142,0,0" TextWrapping="Wrap" Text="From hh:mm:ss" VerticalAlignment="Top" Width="89"/>
-        <TextBlock HorizontalAlignment="Left" Margin="10,170,0,0" TextWrapping="Wrap" Text="To hh:mm:ss" VerticalAlignment="Top" Width="89"/>
+        <TextBox x:Name="cutTo" Height="23" Margin="52,170,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,142,0,0" TextWrapping="Wrap" Text="From:" VerticalAlignment="Top" Width="37"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,170,0,0" TextWrapping="Wrap" Text="To:" VerticalAlignment="Top" Width="37"/>
+        <Slider x:Name="progressBar" IsEnabled="false" Margin="55,0,60,10" Grid.Column="1" Height="18" VerticalAlignment="Bottom"/>
+        <TextBlock x:Name="length" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,10,5" TextWrapping="Wrap" Text="00:00:00" VerticalAlignment="Bottom" Width="50" Height="23"/>
 
     </Grid>
 </Window>
