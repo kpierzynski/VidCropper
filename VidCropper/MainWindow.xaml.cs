@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,8 +38,13 @@ namespace VidCropper
 
             player.MouseLeftButtonDown += player_mouseLeftButtonDown;
             player.MouseLeftButtonUp += player_mouseLeftButtonUp;
+            player.MediaOpened += player_loaded;
         }
-
+        private void player_loaded(object sender, RoutedEventArgs e)
+        {
+            cutFrom.Text = "00:00:00";
+            if (String.IsNullOrEmpty(cutTo.Text)) cutTo.Text = player.NaturalDuration.TimeSpan.ToString(@"hh\:mm\:ss");
+        }
 
         private void player_mouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -66,20 +72,36 @@ namespace VidCropper
 
         private void timer_event(object sender, EventArgs e)
         {
-            duration.Text = "Duration: " + player.Position.ToString(@"hh\:mm\:ss") + " / " + ((player.NaturalDuration.HasTimeSpan == true) ? player.NaturalDuration.TimeSpan.ToString(@"hh\:mm\:ss") : "00:00:00");
-
+            String dur = ((player.NaturalDuration.HasTimeSpan == true) ? player.NaturalDuration.TimeSpan.ToString(@"hh\:mm\:ss") : "00:00:00");
+            duration.Text = "Duration: " + player.Position.ToString(@"hh\:mm\:ss") + " / " + dur;
         }
 
         private void generate_click(object sender, RoutedEventArgs e)
         {
+            String from = cutFrom.Text;
+            String to = cutTo.Text;
+            DateTime fromTime;
+            DateTime toTime;
+            String timeStampFormat = "hh:mm:ss";
+
+            bool resFrom = DateTime.TryParseExact(from, timeStampFormat, DateTimeFormatInfo.InvariantInfo, DateTimeStyles.None, out fromTime);
+            bool resTo = DateTime.TryParseExact(to, timeStampFormat, DateTimeFormatInfo.InvariantInfo, DateTimeStyles.None, out toTime);
+
+            if( fromTime > toTime )
+            {
+                MessageBox.Show("From timestamp should be before to timestamp.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (from.Length == 0 || to.Length == 0 || !resFrom || !resTo )
+            {
+                MessageBox.Show("Missing or incorrect from or to timestamps! Pass in hh:mm:ss format.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             if (String.IsNullOrEmpty(filePath))
             {
                 MessageBox.Show("Open file first!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
-            if (p0 == default(Point) || p1 == default(Point))
-            {
-                MessageBox.Show("Select rectangle first!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -109,7 +131,15 @@ namespace VidCropper
             int w = (p1x - p0x) < 0 ? p0x - p1x : p1x - p0x;
             int h = (p1y - p0y) < 0 ? p0y - p1y : p1y - p0y;
 
-            FormattableString cmd = $"-i \"{filePath}\" -filter:v \"crop={w}:{h}:{x}:{y}\" -c:v {(codec.SelectedItem as ComboBoxItem).Content.ToString()} \"{saveFilePath}\"";
+            if (p0 == default(Point) || p1 == default(Point))
+            {
+                x = 0;
+                y = 0;
+                w = player.NaturalVideoWidth;
+                h = player.NaturalVideoHeight;
+            }
+
+            FormattableString cmd = $"-ss {from}.0 -i \"{filePath}\" -t { (toTime - fromTime).ToString(@"hh\:mm\:ss") }.0 -filter:v \"crop={w}:{h}:{x}:{y}\" -c:v {(codec.SelectedItem as ComboBoxItem).Content.ToString()} \"{saveFilePath}\"";
             command.Text = "./ffmpeg.exe " + cmd.ToString();
 
             using (Process p = new Process())
@@ -150,6 +180,7 @@ namespace VidCropper
             {
                 filePath = open.FileName;
                 player.Source = new Uri(filePath);
+
                 player.Play();
             }
         }
