@@ -51,6 +51,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="10,170,0,0" TextWrapping="Wrap" Text="To:" VerticalAlignment="Top" Width="37"/>
         <Slider x:Name="progressBar" IsEnabled="false" Margin="55,0,60,10" Grid.Column="1" Height="18" VerticalAlignment="Bottom"/>
         <TextBlock x:Name="length" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,10,5" TextWrapping="Wrap" Text="00:00:00" VerticalAlignment="Bottom" Width="50" Height="23"/>
+        <ProgressBar x:Name="progress" HorizontalAlignment="Left" Height="23" Margin="10,408,0,0" VerticalAlignment="Top" Width="377"/>
 
     </Grid>
 </Window>

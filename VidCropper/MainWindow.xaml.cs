@@ -174,14 +174,48 @@ namespace VidCropper
             FormattableString cmd = $"-ss {from}.0 -i \"{filePath}\" -t { (toTime - fromTime).ToString(@"hh\:mm\:ss") }.0 -filter:v \"crop={w}:{h}:{x}:{y}\" -c:v {(codec.SelectedItem as ComboBoxItem).Content.ToString()} \"{saveFilePath}\"";
             command.Text = "./ffmpeg.exe " + cmd.ToString();
 
+            progress.Maximum = player.NaturalDuration.TimeSpan.TotalSeconds;
             using (Process p = new Process())
             {
                 p.StartInfo.FileName = currentPath + "\\ffmpeg.exe";
                 p.StartInfo.Arguments = cmd.ToString();
                 p.StartInfo.CreateNoWindow = false;
+                p.StartInfo.RedirectStandardOutput = true;
+                p.StartInfo.RedirectStandardError = true;
+                p.StartInfo.UseShellExecute = false;
+                p.StartInfo.CreateNoWindow = true;
+                p.EnableRaisingEvents = true;
+                p.ErrorDataReceived += ffmpeg_process_bar;
+                p.Exited += (s, ev) => MessageBox.Show("DONE");
                 p.Start();
+                p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
             }
             canvas.Children.Clear();
+        }
+
+        private void ffmpeg_process_bar(object sender, DataReceivedEventArgs e)
+        {
+            string data = e.Data;
+            if (String.IsNullOrEmpty(data)) return;
+
+            if (data.Contains("time=") && data.Contains(" bitrate="))
+            {
+                int start, end;
+                start = data.IndexOf("time=") + 5;
+                end = data.IndexOf(" bitrate=", start);
+                string result = data.Substring(start, end - start);
+                Console.WriteLine(data);
+
+                TimeSpan progress_value;
+                progress_value = TimeSpan.Parse(result);
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+              {
+                  progress.Value = progress_value.TotalSeconds;
+              }));
+                
+
+            }
         }
 
         private void plus10s_Click(object sender, RoutedEventArgs e)
