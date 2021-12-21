@@ -43,8 +43,8 @@ namespace VidCropper.UserControls
 
         public void Kill()
         {
-            ffmpeg.Kill();
-            th.Abort();
+            if( ffmpeg != null ) ffmpeg.Kill();
+            if( th != null ) th.Abort();
         }
 
         public void SetLengthField(TimeSpan length)

@@ -58,7 +58,15 @@ namespace VidCropper.UserControls
 
             slider.PreviewMouseLeftButtonDown += Slider_PreviewMouseLeftButtonDown;
             slider.ValueChanged += Slider_ValueChanged; ;
-            slider.PreviewMouseLeftButtonUp += Slider_PreviewMouseLeftButtonUp; ;
+            slider.PreviewMouseLeftButtonUp += Slider_PreviewMouseLeftButtonUp;
+
+            this.SizeChanged += MediaPlayer_SizeChanged;
+        }
+
+        private void MediaPlayer_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            canvas.Children.Clear();
+            RectPicked.Invoke(this, 0, 0, (int)player.NaturalVideoWidth, (int)player.NaturalVideoHeight);
         }
 
         public void Init(string path)
@@ -67,6 +75,7 @@ namespace VidCropper.UserControls
             SetMediaPath(path);
             EnableControls();
             Play();
+            canvas.Children.Clear();
         }
 
         private void timer_event(object sender, EventArgs e)
