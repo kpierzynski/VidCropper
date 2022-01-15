@@ -64,9 +64,11 @@ namespace VidCropper.UserControls
 
         private void open_Click(object sender, RoutedEventArgs e)
         {
-            bool result = OpenFileDialog(out filePath);
-            if (result)
+            String _filePath;
+            bool result = OpenFileDialog(out _filePath);
+            if (result == true)
             {
+                filePath = _filePath;
                 FilePicked.Invoke(this, filePath);
                 save.IsEnabled = true;
             }
@@ -184,7 +186,10 @@ namespace VidCropper.UserControls
                     EventHandler exitHandler = null;
                     exitHandler = (s, ev) =>
                     {
-                        MessageBox.Show("Conversion done!");
+                        if (Application.Current != null) Application.Current.Dispatcher.Invoke(new Action(() =>
+                        {
+                            if (showDone.IsChecked == true) MessageBox.Show("Conversion done!");
+                        }));
                         //progress.Value = 0;
                         ffmpeg.Exited -= exitHandler;
                     };

@@ -35,6 +35,7 @@
         <ProgressBar x:Name="progress" Margin="10,0,10,44" Height="23" VerticalAlignment="Bottom"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,0,0,72" TextWrapping="Wrap" Text="ETA:" Height="16" VerticalAlignment="Bottom"/>
         <TextBlock x:Name="eta" HorizontalAlignment="Left" Margin="37,0,0,72" TextWrapping="Wrap" Text="N/A" Height="16" VerticalAlignment="Bottom"/>
+        <CheckBox x:Name="showDone" Content="Show message when conversion is done" Margin="10,198,10,0" VerticalAlignment="Top"/>
 
     </Grid>
 </UserControl>
