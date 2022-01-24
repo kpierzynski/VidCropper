@@ -36,6 +36,7 @@
         <TextBlock HorizontalAlignment="Left" Margin="10,0,0,72" TextWrapping="Wrap" Text="ETA:" Height="16" VerticalAlignment="Bottom"/>
         <TextBlock x:Name="eta" HorizontalAlignment="Left" Margin="37,0,0,72" TextWrapping="Wrap" Text="N/A" Height="16" VerticalAlignment="Bottom"/>
         <CheckBox x:Name="showDone" Content="Show message when conversion is done" Margin="10,198,10,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="useCuda" Content="Select if and only if Your machine has NVidia GPU" Margin="10,218,10,0" VerticalAlignment="Top"/>
 
     </Grid>
 </UserControl>

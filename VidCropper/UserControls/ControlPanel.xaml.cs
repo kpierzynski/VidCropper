@@ -147,6 +147,7 @@ namespace VidCropper.UserControls
 
             FormattableString[] cmds = new FormattableString[]
             {
+                $"{ ((useCuda.IsChecked == true ) ? "-hwaccel cuda" : "") }",
                 $"-ss {cutFrom.Text}.0",
                 $"-i \"{filePath}\"",
                 $"-t { (toTime - fromTime).ToString(@"hh\:mm\:ss") }.0",
