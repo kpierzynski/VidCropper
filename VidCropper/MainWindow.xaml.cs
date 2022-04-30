@@ -1,8 +1,5 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,10 +12,12 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace VidCropper
 {
+    /// <summary>
+    /// Interaction logic for MainWindow.xaml
+    /// </summary>
     public partial class MainWindow : Window
     {
 
@@ -34,7 +33,7 @@ namespace VidCropper
         private void MediaPlayer_Loaded(object sender, TimeSpan length, int w, int h)
         {
             controlPanel.SetLengthField(length);
-            controlPanel.SetRect(0,0,w,h);
+            controlPanel.SetRect(0, 0, w, h);
         }
 
         private void MediaPlayer_RectPicked(object sender, int x, int y, int w, int h)
@@ -45,13 +44,6 @@ namespace VidCropper
         private void ControlPanel_FilePicked(object sender, string path)
         {
             mediaPlayer.Init(path);
-        }
-
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
-            controlPanel.Kill();
-            Application.Current.Shutdown();
         }
     }
 }

@@ -66,7 +66,7 @@ namespace VidCropper.UserControls
         private void MediaPlayer_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             canvas.Children.Clear();
-            RectPicked.Invoke(this, 0, 0, (int)player.NaturalVideoWidth, (int)player.NaturalVideoHeight);
+            if(RectPicked != null) RectPicked.Invoke(this, 0, 0, (int)player.NaturalVideoWidth, (int)player.NaturalVideoHeight);
         }
 
         public void Init(string path)
@@ -103,10 +103,12 @@ namespace VidCropper.UserControls
             {
                 Height = h,
                 Width = w,
-                Fill = System.Windows.Media.Brushes.Transparent,
+                Fill = new SolidColorBrush( Color.FromArgb(63,127,0,0) ),
                 StrokeThickness = 1,
                 Stroke = new SolidColorBrush(Colors.Red),
-                RenderTransform = new TranslateTransform(x, y)
+                RenderTransform = new TranslateTransform(x, y),
+                IsHitTestVisible = false,
+                
             };
 
             double ratioX = player.NaturalVideoWidth / player.ActualWidth;

@@ -41,6 +41,7 @@ namespace VidCropper.UserControls
             InitializeComponent();
         }
 
+
         public void Kill()
         {
             if( ffmpeg != null ) ffmpeg.Kill();
@@ -60,6 +61,8 @@ namespace VidCropper.UserControls
             this.y = y;
             this.w = w;
             this.h = h;
+            resizingInfo.Text = w.ToString() + " width: " + h.ToString() + " height (x: " + x.ToString() + ", y: " + y.ToString() + ")";
+
         }
 
         private void open_Click(object sender, RoutedEventArgs e)
@@ -69,7 +72,8 @@ namespace VidCropper.UserControls
             if (result == true)
             {
                 filePath = _filePath;
-                FilePicked.Invoke(this, filePath);
+                progress.Value = 0;
+                if( FilePicked != null ) FilePicked.Invoke(this, filePath);
                 save.IsEnabled = true;
             }
         }
@@ -147,12 +151,12 @@ namespace VidCropper.UserControls
 
             FormattableString[] cmds = new FormattableString[]
             {
-                $"{ ((useCuda.IsChecked == true ) ? "-hwaccel cuda" : "") }",
+                $"-hwaccel auto",
                 $"-ss {cutFrom.Text}.0",
                 $"-i \"{filePath}\"",
                 $"-t { (toTime - fromTime).ToString(@"hh\:mm\:ss") }.0",
                 $"-filter:v \"crop={w}:{h}:{x}:{y}\"",
-                $"-c:v {(codec.SelectedItem as ComboBoxItem).Content.ToString()}",
+                $"-c:v libx265",
                 $"-c:a copy",
                 $"\"{savePath}\""
             };
@@ -163,8 +167,6 @@ namespace VidCropper.UserControls
                 cmd += arg.ToString();
                 cmd += " ";
             }
-
-            command.Text = "./ffmpeg.exe " + cmd;
 
             th = new Thread(() =>
             {

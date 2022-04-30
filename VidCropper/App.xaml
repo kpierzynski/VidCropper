@@ -4,6 +4,32 @@
              xmlns:local="clr-namespace:VidCropper"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+
+        <SolidColorBrush x:Key="Font" Color="White"/>
+
+        <SolidColorBrush x:Key="Background" Color="#303040" />
+        <SolidColorBrush x:Key="LightBackground" Color="#404050" />
+        <SolidColorBrush x:Key="Controlable" Color="#505060" />
+
+        <Style x:Key="buttonStyle" TargetType="Button">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="{StaticResource Controlable}"/>
+            <Setter Property="FontSize" Value="26" />
+
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Foreground" Value="Gray" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource Font}" />
+                </Trigger>
+            </Style.Triggers>
+
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="4" />
+                </Style>
+            </Style.Resources>
+        </Style>
     </Application.Resources>
 </Application>
